@@ -1,3 +1,23 @@
+> **🍴 Fork notice / Fork 说明**
+>
+> This repository is a **branding fork** of
+> [QuantumNous/new-api](https://github.com/QuantumNous/new-api), kept in sync with upstream.
+> Our changes are **strictly additive** — a new `Groq` channel type, a brand theme
+> preset, and a deployment kit. **No upstream brand marks, logos or copyright
+> notices have been modified or removed.**
+>
+> 本仓库是 [QuantumNous/new-api](https://github.com/QuantumNous/new-api) 的**品牌化 Fork**，
+> 持续跟进上游。我们的改动**全部为加法**——新增 `Groq` 渠道类型、品牌主题预设与部署套件，
+> **未修改或移除任何上游品牌标识、LOGO 与版权声明**。
+>
+> Fork 专属文档：[`FORK.md`](./FORK.md)（改动清单与 AGPLv3 合规）·
+> [`BRANDING.md`](./BRANDING.md)（品牌化指南与合规边界）·
+> [`DEPLOY.md`](./DEPLOY.md)（部署）· [`VERIFY.md`](./VERIFY.md)（改动验证清单）
+>
+> Baseline: [`058c823`](https://github.com/QuantumNous/new-api/commit/058c8231b68c51ee02abee15befcd720fee9f4a2) · License: AGPLv3 (unchanged)
+
+---
+
 <div align="center">
 
 ![new-api](/web/public/logo.png)

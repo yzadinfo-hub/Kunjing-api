@@ -77,6 +77,12 @@ export const THEME_PRESETS = [
     name: 'Lavender Dream',
     swatches: ['oklch(0.5709 0.1808 306.89)', 'oklch(0.811 0.0589 201.14)'],
   },
+  {
+    // Fork brand preset: spotlight-amber primary + plum secondary.
+    value: 'zumeng-spotlight',
+    name: 'Zumeng Spotlight',
+    swatches: ['oklch(0.6812 0.1738 55.01)', 'oklch(0.5392 0.1445 330.2)'],
+  },
 ] as const
 
 export type ThemePreset = (typeof THEME_PRESETS)[number]['value']
@@ -112,7 +118,9 @@ export type ThemeCustomization = {
 }
 
 export const DEFAULT_THEME_CUSTOMIZATION: ThemeCustomization = {
-  preset: 'default',
+  // Fork default: brand preset. Users can still switch to any upstream preset
+  // from the theme picker; this only changes the out-of-the-box appearance.
+  preset: 'zumeng-spotlight',
   font: 'default',
   radius: 'default',
   scale: 'default',

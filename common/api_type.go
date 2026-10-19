@@ -81,6 +81,11 @@ func ChannelType2APIType(channelType int) (int, bool) {
 		apiType = constant.APITypeSub2API
 	case constant.ChannelTypeNewAPI:
 		apiType = constant.APITypeNewAPI
+	case constant.ChannelTypeGroq:
+		// Groq exposes an OpenAI-compatible /openai/v1 surface, so it reuses
+		// the OpenAI adaptor and only needs a dedicated channel type for
+		// naming, default base URL and model list purposes.
+		apiType = constant.APITypeOpenAI
 	}
 	if apiType == -1 {
 		// Task plugin channels are served by the task relay and must never

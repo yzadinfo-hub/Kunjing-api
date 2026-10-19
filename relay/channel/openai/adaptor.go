@@ -18,6 +18,7 @@ import (
 	"github.com/QuantumNous/new-api/logger"
 	"github.com/QuantumNous/new-api/relay/channel"
 	"github.com/QuantumNous/new-api/relay/channel/ai360"
+	"github.com/QuantumNous/new-api/relay/channel/groq"
 	"github.com/QuantumNous/new-api/relay/channel/lingyiwanwu"
 	"github.com/QuantumNous/new-api/relay/channel/openrouter"
 	"github.com/QuantumNous/new-api/relaykit/dto"
@@ -809,6 +810,8 @@ func (a *Adaptor) GetModelList() []string {
 		return xinference.ModelList
 	case constant.ChannelTypeOpenRouter:
 		return openrouter.ModelList
+	case constant.ChannelTypeGroq:
+		return groq.ModelList
 	default:
 		return ModelList
 	}
@@ -826,6 +829,8 @@ func (a *Adaptor) GetChannelName() string {
 		return xinference.ChannelName
 	case constant.ChannelTypeOpenRouter:
 		return openrouter.ChannelName
+	case constant.ChannelTypeGroq:
+		return groq.ChannelName
 	default:
 		return ChannelName
 	}

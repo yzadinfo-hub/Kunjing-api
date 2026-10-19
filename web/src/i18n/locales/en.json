@@ -2969,6 +2969,8 @@
     "Greater Than or Equal": "Greater Than or Equal",
     "Grok": "Grok",
     "Grok Settings": "Grok Settings",
+    "Connect to Groq LPU inference services": "Connect to Groq LPU inference services",
+    "Groq": "Groq",
     "Group": "Group",
     "Group {{path}}": "Group {{path}}",
     "Group & Quota": "Group & Quota",

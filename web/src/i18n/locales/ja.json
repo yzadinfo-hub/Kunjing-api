@@ -2969,6 +2969,8 @@
     "Greater Than or Equal": "以上",
     "Grok": "Grok",
     "Grok Settings": "Grok 設定",
+    "Connect to Groq LPU inference services": "Groq LPU 推論サービスに接続",
+    "Groq": "Groq",
     "Group": "グループ",
     "Group {{path}}": "グループ {{path}}",
     "Group & Quota": "グループとクォータ",

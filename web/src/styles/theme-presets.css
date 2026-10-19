@@ -742,3 +742,43 @@ For commercial licensing, please contact support@quantumnous.com
     width: 100%;
   }
 }
+
+/* ── Zumeng Spotlight ─────────────────────────────────────────────────── */
+/* Brand preset for the Zumeng fork. Warm spotlight-amber primary with a
+ * deep plum secondary, echoing a short-drama "stage light" identity.
+ * Added by the fork; upstream presets above are untouched. */
+[data-theme-preset='zumeng-spotlight'] {
+  --primary: oklch(0.6812 0.1738 55.01);
+  --primary-foreground: oklch(0.145 0.02 55);
+  --secondary: oklch(0.5392 0.1445 330.2);
+  --secondary-foreground: oklch(0.98 0.005 330);
+  --ring: oklch(0.6812 0.1738 55.01);
+  --chart-1: oklch(0.6812 0.1738 55.01);
+  --chart-2: oklch(0.5392 0.1445 330.2);
+  --chart-3: oklch(0.7955 0.1206 75.23);
+  --chart-4: oklch(0.6668 0.1578 20.14);
+  --chart-5: oklch(0.8571 0.0658 95.12);
+  --sidebar-primary: oklch(0.6812 0.1738 55.01);
+  --sidebar-primary-foreground: oklch(0.145 0.02 55);
+  --sidebar-accent: oklch(0.6812 0.1738 55.01);
+  --sidebar-accent-foreground: oklch(0.145 0.02 55);
+  --sidebar-ring: oklch(0.6812 0.1738 55.01);
+  --radius: 0.625rem;
+}
+.dark [data-theme-preset='zumeng-spotlight'] {
+  --primary: oklch(0.7623 0.1526 62.44);
+  --primary-foreground: oklch(0.145 0.02 55);
+  --secondary: oklch(0.6318 0.1356 328.71);
+  --secondary-foreground: oklch(0.98 0.005 330);
+  --ring: oklch(0.7623 0.1526 62.44);
+  --chart-1: oklch(0.7623 0.1526 62.44);
+  --chart-2: oklch(0.6318 0.1356 328.71);
+  --chart-3: oklch(0.8451 0.1046 78.32);
+  --chart-4: oklch(0.7384 0.1408 22.15);
+  --chart-5: oklch(0.8976 0.0544 96.31);
+  --sidebar-primary: oklch(0.7623 0.1526 62.44);
+  --sidebar-primary-foreground: oklch(0.145 0.02 55);
+  --sidebar-accent: oklch(0.7623 0.1526 62.44);
+  --sidebar-accent-foreground: oklch(0.145 0.02 55);
+  --sidebar-ring: oklch(0.7623 0.1526 62.44);
+}

@@ -56,6 +56,8 @@ const BRAND_AND_LITERAL_KEYS = new Set([
   'Gemini',
   'Gemini Image 4K',
   'GitHub',
+  // Added by the fork: Groq is a brand name, intentionally untranslated.
+  'Groq',
   'Jimeng',
   'JustSong',
   'LingYiWanWu',

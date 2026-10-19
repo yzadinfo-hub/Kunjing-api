@@ -1,0 +1,59 @@
+# Zumeng API — Caddy 反代配置（自动 HTTPS）
+#
+# Caddy 相对 Nginx 的优势：自动申请/续期证书、HTTP/3、零配置 TLS。
+# 适用于把 https://api.example.com 反代到 docker-compose 中的 zumeng-api:3000。
+#
+# 用法：
+#   1. 把 api.example.com 的 A/AAAA 记录指向本机
+#   2. 替换下面所有 example.com 为你的域名
+#   3. docker run -d --network zumeng-api_zumeng-network \
+#        -p 80:80 -p 443:443 \
+#        -v $PWD/Caddyfile:/etc/caddy/Caddyfile \
+#        -v caddy_data:/data caddy:2-alpine
+
+{
+    # 生产环境建议开启；本地测试可注释掉
+    email admin@example.com
+}
+
+api.example.com {
+    encode zstd gzip
+
+    # 安全响应头
+    header {
+        X-Content-Type-Options nosniff
+        X-Frame-Options SAMEORIGIN
+        Referrer-Policy strict-origin-when-cross-origin
+        # HSTS（确认全站 HTTPS 后再启用）
+        # Strict-Transport-Security "max-age=31536000; includeSubDomains"
+        -Server
+    }
+
+    # 流式响应（SSE）关键配置：禁用缓冲、放宽超时
+    @streaming {
+        path /v1/*
+    }
+    reverse_proxy @streaming zumeng-api:3000 {
+        flush_interval -1
+        transport http {
+            response_header_timeout 600s
+        }
+    }
+
+    # 其余请求（管理后台、静态资源）
+    reverse_proxy zumeng-api:3000 {
+        header_up X-Real-IP {remote_host}
+    }
+
+    log {
+        output file /data/access.log {
+            roll_size 100MiB
+            roll_keep 5
+        }
+    }
+}
+
+# 可选：独立前端/控制台域名
+# console.example.com {
+#     reverse_proxy zumeng-api:3000
+# }

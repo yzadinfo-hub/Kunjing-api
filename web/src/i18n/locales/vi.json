@@ -2969,6 +2969,8 @@
     "Greater Than or Equal": "Lớn hơn hoặc bằng",
     "Grok": "Grok",
     "Grok Settings": "Cài đặt Grok",
+    "Connect to Groq LPU inference services": "Kết nối dịch vụ suy luận Groq LPU",
+    "Groq": "Groq",
     "Group": "Nhóm",
     "Group {{path}}": "Nhóm {{path}}",
     "Group & Quota": "Nhóm & Hạn mức",

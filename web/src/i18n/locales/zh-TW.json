@@ -2969,6 +2969,8 @@
     "Greater Than or Equal": "大於等於",
     "Grok": "Grok",
     "Grok Settings": "Grok 設定",
+    "Connect to Groq LPU inference services": "連接 Groq LPU 推理服務",
+    "Groq": "Groq",
     "Group": "分組",
     "Group {{path}}": "群組 {{path}}",
     "Group & Quota": "分組與配額",

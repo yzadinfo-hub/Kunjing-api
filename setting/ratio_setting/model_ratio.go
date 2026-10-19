@@ -267,6 +267,17 @@ var defaultModelRatio = map[string]float64{
 	"deepseek-ai/DeepSeek-R1":                 0.8,
 	"deepseek-ai/DeepSeek-V3-0324":            0.8,
 	"deepseek-ai/DeepSeek-V3.1":               0.8,
+	// groq (https://groq.com/pricing, $/1M tokens, 1 === $0.002/1K)
+	"llama-3.1-8b-instant":                      0.05 / 1000 * USD,
+	"llama-3.3-70b-versatile":                   0.59 / 1000 * USD,
+	"meta-llama/llama-4-scout-17b-16e-instruct": 0.11 / 1000 * USD,
+	"meta-llama/llama-4-maverick-17b-128e-instruct": 0.20 / 1000 * USD,
+	// NOTE: "openai/gpt-oss-120b" is already priced above (submodel block) and
+	// the ratio table is keyed by model name only, so it must not be repeated.
+	"openai/gpt-oss-20b":                        0.075 / 1000 * USD,
+	"qwen/qwen3-32b":                            0.29 / 1000 * USD,
+	"moonshotai/kimi-k2-instruct":               1.00 / 1000 * USD,
+	"deepseek-r1-distill-llama-70b":             0.75 / 1000 * USD,
 }
 
 var defaultModelPrice = map[string]float64{

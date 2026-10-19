@@ -1,0 +1,100 @@
+# Zumeng API — 品牌化部署 Compose
+#
+# 基于上游 docker-compose.yml 定制：
+#   - 镜像指向本 Fork 自行构建的镜像（见 FORK.md「构建与推送」）
+#   - 强制要求 SESSION_SECRET / CRYPTO_SECRET / 数据库与 Redis 密码（启动即失败，不留默认值）
+#   - 默认开启 Secure Cookie 所需的 TRUSTED_PROXIES
+#   - 日志独立数据库（LOG_SQL_DSN）默认启用，便于日志清理与主库性能隔离
+#
+# 使用：
+#   cp .env.template .env   # 然后编辑 .env
+#   docker compose --env-file .env -f docker-compose.zumeng.yml up -d
+#
+# ⚠️  生产环境必须修改 .env 中的全部密码与密钥！
+
+services:
+  zumeng-api:
+    image: ${ZUMENG_IMAGE:-ghcr.io/your-org/zumeng-api:latest}
+    container_name: zumeng-api
+    restart: always
+    command: --log-dir /app/logs
+    ports:
+      - "${ZUMENG_PORT:-3000}:3000"
+    volumes:
+      - ./data:/data
+      - ./logs:/app/logs
+    environment:
+      # —— 必填：安全基线 ——
+      - SESSION_SECRET=${SESSION_SECRET:?SESSION_SECRET is required}
+      - CRYPTO_SECRET=${CRYPTO_SECRET:?CRYPTO_SECRET is required}
+      - SQL_DSN=postgresql://${POSTGRES_USER:-zumeng}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-zumeng}
+      - LOG_SQL_DSN=postgresql://${POSTGRES_USER:-zumeng}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-zumeng}_log
+      - REDIS_CONN_STRING=redis://:${REDIS_PASSWORD:?REDIS_PASSWORD is required}@redis:6379
+      # —— 运行参数 ——
+      - TZ=${TZ:-Asia/Shanghai}
+      - DEFAULT_LANGUAGE=${DEFAULT_LANGUAGE:-zh-CN}
+      - NODE_NAME=${NODE_NAME:-zumeng-api-node-1}
+      - ERROR_LOG_ENABLED=true
+      - BATCH_UPDATE_ENABLED=true
+      - MEMORY_CACHE_ENABLED=true
+      - SYNC_FREQUENCY=${SYNC_FREQUENCY:-60}
+      # —— HTTPS 反代后的 Secure Cookie ——
+      - SESSION_COOKIE_SECURE=${SESSION_COOKIE_SECURE:-true}
+      - SESSION_COOKIE_TRUSTED_URL=${SESSION_COOKIE_TRUSTED_URL:?required when SESSION_COOKIE_SECURE=true}
+      - TRUSTED_PROXIES=${TRUSTED_PROXIES:-172.20.0.0/16}
+      # —— 流式超时（长文本/推理模型建议 600）——
+      - STREAMING_TIMEOUT=${STREAMING_TIMEOUT:-600}
+    depends_on:
+      redis:
+        condition: service_healthy
+      postgres:
+        condition: service_healthy
+    networks:
+      - zumeng-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/api/status | grep -o '\"success\":\\s*true' || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  redis:
+    image: redis:7-alpine
+    container_name: zumeng-redis
+    restart: always
+    command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    networks:
+      - zumeng-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: zumeng-postgres
+    restart: always
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-zumeng}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-zumeng}
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - zumeng-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-zumeng} -d ${POSTGRES_DB:-zumeng}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  pg_data:
+  redis_data:
+
+networks:
+  zumeng-network:
+    driver: bridge
