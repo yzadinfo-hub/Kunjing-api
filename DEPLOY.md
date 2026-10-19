@@ -1,4 +1,4 @@
-# DEPLOY.md — Zumeng API 部署指南
+# DEPLOY.md — Kunjing API 部署指南
 
 ## 0. 前置条件
 
@@ -24,11 +24,11 @@ openssl rand -base64 24   # → POSTGRES_PASSWORD / REDIS_PASSWORD
 # 3. 编辑 .env：填齐所有必填项，设置 SESSION_COOKIE_TRUSTED_URL 为你的域名
 
 # 4. 启动
-docker compose --env-file .env -f docker-compose.zumeng.yml up -d
+docker compose --env-file .env -f docker-compose.kunjing.yml up -d
 
 # 5. 查看状态
-docker compose --env-file .env -f docker-compose.zumeng.yml ps
-docker logs -f zumeng-api
+docker compose --env-file .env -f docker-compose.kunjing.yml ps
+docker logs -f Kunjing-api
 ```
 
 首次启动会自动建表并进入初始化向导。访问 <http://服务器IP:3000>，
@@ -36,25 +36,25 @@ docker logs -f zumeng-api
 
 ## 2. 构建自己的镜像
 
-默认镜像是占位符 `ghcr.io/your-org/zumeng-api:latest`，必须先自己构建。
+默认镜像是占位符 `ghcr.io/your-org/Kunjing-api:latest`，必须先自己构建。
 上游 `Dockerfile` 已是三阶段构建（bun 构建前端 → golang:1.26-alpine 编译 → debian:bookworm-slim 运行时），
 **直接用即可，无需改动**：
 
 ```bash
 # 在仓库根目录（需要 bun + go 1.26）
-docker build -t ghcr.io/your-org/zumeng-api:latest .
+docker build -t ghcr.io/your-org/Kunjing-api:latest .
 
 # 推送（如在 GHCR）
 echo "$GITHUB_TOKEN" | docker login ghcr.io -u your-user --password-stdin
-docker push ghcr.io/your-org/zumeng-api:latest
+docker push ghcr.io/your-org/Kunjing-api:latest
 ```
 
 版本号由仓库根目录的 `VERSION` 文件提供（该文件默认为空，CI 会写入）。
 本地构建想带版本号：
 
 ```bash
-git describe --tags --always > VERSION   # 或手动写，如 v1.0.0-zumeng.1
-docker build -t ghcr.io/your-org/zumeng-api:$(cat VERSION) .
+git describe --tags --always > VERSION   # 或手动写，如 v1.0.0-Kunjing.1
+docker build -t ghcr.io/your-org/Kunjing-api:$(cat VERSION) .
 ```
 
 > 上游 CI（`.github/workflows/release.yml`）支持打 tag 自动多架构构建，
@@ -67,19 +67,19 @@ docker build -t ghcr.io/your-org/zumeng-api:$(cat VERSION) .
 ```bash
 # 1. 编辑 deploy/Caddyfile，把 api.example.com 全部替换成你的域名
 # 2. 让 Caddy 加入同一个 docker network
-docker run -d --name zumeng-caddy --restart always \
-  --network zumeng-api_zumeng-network \
+docker run -d --name Kunjing-caddy --restart always \
+  --network Kunjing-api_Kunjing-network \
   -p 80:80 -p 443:443 -p 443:443/udp \
   -v "$PWD/deploy/Caddyfile":/etc/caddy/Caddyfile:ro \
-  -v zumeng_caddy_data:/data -v zumeng_caddy_config:/config \
+  -v Kunjing_caddy_data:/data -v Kunjing_caddy_config:/config \
   caddy:2-alpine
 ```
 
 ### 3.2 Nginx（备选）
 
 ```bash
-docker run -d --name zumeng-nginx --restart always \
-  --network zumeng-api_zumeng-network \
+docker run -d --name Kunjing-nginx --restart always \
+  --network Kunjing-api_Kunjing-network \
   -p 80:80 -p 443:443 \
   -v "$PWD/deploy/nginx.conf":/etc/nginx/conf.d/default.conf:ro \
   -v "$PWD/tls":/etc/nginx/tls:ro \
@@ -118,13 +118,13 @@ docker run -d --name zumeng-nginx --restart always \
 
 ```bash
 # 数据库（最关键）
-docker exec zumeng-postgres pg_dump -U zumeng zumeng | gzip > backup-$(date +%F).sql.gz
+docker exec Kunjing-postgres pg_dump -U Kunjing Kunjing | gzip > backup-$(date +%F).sql.gz
 
 # 日志库
-docker exec zumeng-postgres pg_dump -U zumeng zumeng_log | gzip > backup-log-$(date +%F).sql.gz
+docker exec Kunjing-postgres pg_dump -U Kunjing Kunjing_log | gzip > backup-log-$(date +%F).sql.gz
 
 # Redis（AOF 已开启，容器内 /data）
-docker exec zumeng-redis redis-cli -a "$REDIS_PASSWORD" BGSAVE
+docker exec Kunjing-redis redis-cli -a "$REDIS_PASSWORD" BGSAVE
 ```
 
 建议每天 `pg_dump` + 保留 14 天；`/data` 与 `./logs` 纳入主机级备份。
@@ -142,8 +142,8 @@ docker exec zumeng-redis redis-cli -a "$REDIS_PASSWORD" BGSAVE
 
 ```bash
 git fetch upstream && git merge upstream/main --no-edit   # 先合并上游
-docker compose --env-file .env -f deploy/docker-compose.zumeng.yml pull
-docker compose --env-file .env -f deploy/docker-compose.zumeng.yml up -d
+docker compose --env-file .env -f deploy/docker-compose.kunjing.yml pull
+docker compose --env-file .env -f deploy/docker-compose.kunjing.yml up -d
 ```
 
 升级后**必须**跑 `VERIFY.md` 的检查清单。数据库迁移是自动的（GORM AutoMigrate），

@@ -1,4 +1,4 @@
-# Zumeng API — 品牌化部署 Compose
+# Kunjing API — 品牌化部署 Compose
 #
 # 基于上游 docker-compose.yml 定制：
 #   - 镜像指向本 Fork 自行构建的镜像（见 FORK.md「构建与推送」）
@@ -8,18 +8,18 @@
 #
 # 使用：
 #   cp .env.template .env   # 然后编辑 .env
-#   docker compose --env-file .env -f docker-compose.zumeng.yml up -d
+#   docker compose --env-file .env -f docker-compose.kunjing.yml up -d
 #
 # ⚠️  生产环境必须修改 .env 中的全部密码与密钥！
 
 services:
-  zumeng-api:
-    image: ${ZUMENG_IMAGE:-ghcr.io/your-org/zumeng-api:latest}
-    container_name: zumeng-api
+  Kunjing-api:
+    image: ${KUNJING_IMAGE:-ghcr.io/your-org/Kunjing-api:latest}
+    container_name: Kunjing-api
     restart: always
     command: --log-dir /app/logs
     ports:
-      - "${ZUMENG_PORT:-3000}:3000"
+      - "${KUNJING_PORT:-3000}:3000"
     volumes:
       - ./data:/data
       - ./logs:/app/logs
@@ -27,13 +27,13 @@ services:
       # —— 必填：安全基线 ——
       - SESSION_SECRET=${SESSION_SECRET:?SESSION_SECRET is required}
       - CRYPTO_SECRET=${CRYPTO_SECRET:?CRYPTO_SECRET is required}
-      - SQL_DSN=postgresql://${POSTGRES_USER:-zumeng}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-zumeng}
-      - LOG_SQL_DSN=postgresql://${POSTGRES_USER:-zumeng}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-zumeng}_log
+      - SQL_DSN=postgresql://${POSTGRES_USER:-Kunjing}:${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}@postgres:5432/${POSTGRES_DB:-Kunjing}
+      - LOG_SQL_DSN=postgresql://${POSTGRES_USER:-Kunjing}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-Kunjing}_log
       - REDIS_CONN_STRING=redis://:${REDIS_PASSWORD:?REDIS_PASSWORD is required}@redis:6379
       # —— 运行参数 ——
       - TZ=${TZ:-Asia/Shanghai}
       - DEFAULT_LANGUAGE=${DEFAULT_LANGUAGE:-zh-CN}
-      - NODE_NAME=${NODE_NAME:-zumeng-api-node-1}
+      - NODE_NAME=${NODE_NAME:-Kunjing-api-node-1}
       - ERROR_LOG_ENABLED=true
       - BATCH_UPDATE_ENABLED=true
       - MEMORY_CACHE_ENABLED=true
@@ -50,7 +50,7 @@ services:
       postgres:
         condition: service_healthy
     networks:
-      - zumeng-network
+      - Kunjing-network
     healthcheck:
       test: ["CMD-SHELL", "wget -q -O - http://localhost:3000/api/status | grep -o '\"success\":\\s*true' || exit 1"]
       interval: 30s
@@ -60,13 +60,13 @@ services:
 
   redis:
     image: redis:7-alpine
-    container_name: zumeng-redis
+    container_name: Kunjing-redis
     restart: always
     command: ["redis-server", "--requirepass", "${REDIS_PASSWORD}", "--appendonly", "yes"]
     volumes:
       - redis_data:/data
     networks:
-      - zumeng-network
+      - Kunjing-network
     healthcheck:
       test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD}", "ping"]
       interval: 10s
@@ -75,18 +75,18 @@ services:
 
   postgres:
     image: postgres:16-alpine
-    container_name: zumeng-postgres
+    container_name: Kunjing-postgres
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-zumeng}
+      POSTGRES_USER: ${POSTGRES_USER:-Kunjing}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
-      POSTGRES_DB: ${POSTGRES_DB:-zumeng}
+      POSTGRES_DB: ${POSTGRES_DB:-Kunjing}
     volumes:
       - pg_data:/var/lib/postgresql/data
     networks:
-      - zumeng-network
+      - Kunjing-network
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-zumeng} -d ${POSTGRES_DB:-zumeng}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-Kunjing} -d ${POSTGRES_DB:-Kunjing}"]
       interval: 10s
       timeout: 5s
       retries: 5
@@ -96,5 +96,5 @@ volumes:
   redis_data:
 
 networks:
-  zumeng-network:
+  Kunjing-network:
     driver: bridge
