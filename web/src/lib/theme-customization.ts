@@ -32,7 +32,7 @@ export const THEME_PRESETS = [
   {
     // Inspired by Anthropic's official brand language: warm cream canvas
     // (#faf9f5) paired with clay/coral (#d97757) as the single accent.
-    // Swatches preview the canvas → accent gradient that defines the system.
+    // Swatches preview the canvas � accent gradient that defines the system.
     value: 'anthropic',
     name: 'Anthropic',
     swatches: ['oklch(0.984 0.005 95)', 'oklch(0.685 0.142 38)'],
@@ -79,8 +79,8 @@ export const THEME_PRESETS = [
   },
   {
     // Fork brand preset: spotlight-amber primary + plum secondary.
-    value: 'zumeng-spotlight',
-    name: 'Zumeng Spotlight',
+    value: 'kunjing-spotlight',
+    name: 'Kunjing Spotlight',
     swatches: ['oklch(0.6812 0.1738 55.01)', 'oklch(0.5392 0.1445 330.2)'],
   },
 ] as const
@@ -93,10 +93,10 @@ export type ContentLayout = 'full' | 'centered'
 /**
  * Font axis for the theme.
  *
- * - `default` — use the browser's sans-serif unless the active preset
+ * - `default`  use the browser's sans-serif unless the active preset
  *   specifies its own font (Anthropic uses serif).
- * - `sans` — explicitly use Public Sans.
- * - `serif` — use Lora + CJK fallbacks. Monospace contexts keep their
+ * - `sans`  explicitly use Public Sans.
+ * - `serif`  use Lora + CJK fallbacks. Monospace contexts keep their
  *   own family via Tailwind preflight and `.font-mono`.
  */
 export type ThemeFont = 'default' | 'sans' | 'serif'
@@ -120,7 +120,7 @@ export type ThemeCustomization = {
 export const DEFAULT_THEME_CUSTOMIZATION: ThemeCustomization = {
   // Fork default: brand preset. Users can still switch to any upstream preset
   // from the theme picker; this only changes the out-of-the-box appearance.
-  preset: 'zumeng-spotlight',
+  preset: 'kunjing-spotlight',
   font: 'default',
   radius: 'default',
   scale: 'default',
@@ -159,7 +159,7 @@ export const CONTENT_LAYOUT_VALUES: ReadonlySet<ContentLayout> = new Set([
 ])
 
 /**
- * Preset → default font mapping. Used by the provider to resolve the user's
+ * Preset � default font mapping. Used by the provider to resolve the user's
  * `font: 'default'` preference against the active preset.
  *
  * Presets without a font override use the browser's sans-serif. Public
